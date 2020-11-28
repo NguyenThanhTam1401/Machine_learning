@@ -9,6 +9,8 @@ __pycache__/
 # Distribution / packaging
 .Python
 build/
+saved_var/
+.saved_var
 develop-eggs/
 dist/
 downloads/
