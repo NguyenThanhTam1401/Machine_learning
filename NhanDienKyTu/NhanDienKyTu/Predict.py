@@ -52,20 +52,17 @@ import joblib
 from sklearn.ensemble import RandomForestClassifier
 rf_clf = RandomForestClassifier(n_estimators=100, random_state=42)
 
-#from sklearn.tree import DecisionTreeClassifier
-#rf_clf = DecisionTreeClassifier(random_state=42)
+from sklearn import svm
 
 from sklearn.model_selection import cross_val_predict
 from PIL import Image
 from matplotlib.pyplot import imread
 from skimage.color import rgb2gray, rgba2rgb
 class RandomForestPredict:
-    rf_clf = RandomForestClassifier(n_estimators=100, random_state=42)
-    rf_clf = joblib.load('saved_var/rf_clf')
-    
-    #rf_clf = DecisionTreeClassifier(random_state=42)
-    #rf_clf = joblib.load('saved_var/dt_clf')
-    print('học xong RandomForestClassifier')
+    #rf_clf = RandomForestClassifier(n_estimators=100, random_state=42)
+    svm_clf = joblib.load('saved_var/rf_clf')
+    #svm_clf = joblib.load('saved_var/svm_clf_best_parameter')
+    print('học xong svm_clf_best_parameter')
 
     def predict(self, image_name):
         self.image = imread(image_name)
@@ -73,7 +70,7 @@ class RandomForestPredict:
 
         print('Image shape:')
         img_arr = img.reshape(784)
-        #print(img_arr)
+
         print("=======================================")
         print("=======================================")
         for i in range(0,784):
@@ -89,7 +86,7 @@ class RandomForestPredict:
         #plt.title("letter: ")
         #plt.show()
         #
-        results = self.rf_clf.predict_proba([img_arr])[0]
+        results = self.svm_clf.predict_proba([img_arr])[0]
         print(results)
         results = np.array(results)
         first_max = -1
@@ -130,40 +127,6 @@ class RandomForestPredict:
         print(kq)
         return kq
 
-        #return self.numbers_to_strings(self.rf_clf.predict([img_arr])[0])
-        #print('Đây là ký tự: ' + self.numbers_to_strings(self.rf_clf.predict([img_arr])[0]))
-        #print(self.rf_clf.predict([img_arr]))
-
-    #def numbers_to_strings(self,char): 
-    #    switcher = { 
-    #        1: 'a, A', 
-    #        2: 'b, B', 
-    #        3: 'c, C', 
-    #        4: 'd, D',
-    #        5: 'e, E',
-    #        6: 'f, F',
-    #        7: 'g, G',
-    #        8: 'h, H',
-    #        9: 'i, I',
-    #        10:'j, J',
-    #        11: 'k, K',
-    #        12:'l, L',
-    #        13: 'm, M',
-    #        14:'n, N',
-    #        15:'o, O',
-    #        16:'p, P',
-    #        17:'q, Q',
-    #        18:'r, R',
-    #        19:'s, S',
-    #        20:'t, T',
-    #        21: 'u, U',
-    #        22: 'v, V',
-    #        23: 'w, W',
-    #        24: 'x, X',
-    #        25:'y, Y',
-    #        26: 'z, Z'
-    #    }
-    #    return switcher.get(char, "nothing")
     
     def numbers_to_strings(self,char): 
         switcher = { 
@@ -238,4 +201,4 @@ class RandomForestPredict:
         #plt.show()
         #
 
-        print(self.rf_clf.predict([img_arr]))
+        print(self.svm_clf.predict([img_arr]))
