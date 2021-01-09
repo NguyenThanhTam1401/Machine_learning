@@ -82,50 +82,91 @@ sample_id = 10
 sample_id = 15
 #plot_digit(X_train[sample_id], y_train[sample_id])
 
-
 #============================= RandomForestClassifier
 from sklearn.ensemble import RandomForestClassifier
 rf_clf = RandomForestClassifier(n_estimators=100, random_state=42)
 from sklearn.model_selection import cross_val_predict
+
+#Fit với data chưa được scale
+#if 0:
+#    rf_clf = rf_clf.fit(X_train, y_train)
+#    joblib.dump(rf_clf, 'saved_var/rf_clf')
+#else:
+#    rf_clf = joblib.load('saved_var/rf_clf')
+#print('học xong RandomForestClassifier')
+
+#if 0:
+#   y_probas_rf = cross_val_predict(rf_clf, X_train, y_train, cv=3, n_jobs=-1, method ="predict_proba")
+#   joblib.dump(y_probas_rf, 'saved_var/y_probas_forest')
+#else:
+#   y_probas_rf = joblib.load('saved_var/y_probas_forest')
+#print('xong predict_proba y_probas_rf')
+
+#############
+
+############
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+
+X_train_scaled = scaler.fit_transform(X_train.astype(np.float64))
+# 7.1. SGDClassifier (benefited from feature scaling)
+# Warning: takes time for new run! 
+
+#Chạy lại RF, nhưng dữ liệu đầu vào đã được scale.
+
+#Fit model
+
+print('Bắt đầu fit với dữ liệu được scale')
+
 if 0:
-    rf_clf = rf_clf.fit(X_train, y_train)
-    joblib.dump(rf_clf, 'saved_var/rf_clf')
+    rf_clf_after_scale = rf_clf_after_scale.fit(X_train_scaled, y_train)
+    joblib.dump(rf_clf_after_scale, 'saved_var/rf_clf_after_scale')
 else:
-    rf_clf = joblib.load('saved_var/rf_clf')
+    rf_clf_after_scale = joblib.load('saved_var/rf_clf_after_scale')
 print('học xong RandomForestClassifier')
 
-if 0:
-   y_probas_rf = cross_val_predict(rf_clf, X_train, y_train, cv=3, n_jobs=-1, method ="predict_proba")
-   joblib.dump(y_probas_rf, 'saved_var/y_probas_forest')
+
+if 1:
+    rf_acc_after_scaling = cross_val_score(rf_clf_after_scale, X_train_scaled, y_train, cv=3, scoring="accuracy")
+    joblib.dump(rf_acc_after_scaling,'saved_var/rf_acc_after_scaling')
 else:
-   y_probas_rf = joblib.load('saved_var/y_probas_forest')
-print('xong predict_proba y_probas_rf')
+    rf_acc_after_scaling = joblib.load('saved_var/rf_acc_after_scaling')
+#
+
+#
+#if 1:
+#    rf_acc_after_scaling_test_set = cross_val_score(rf_clf, X_train_scaled, y_train, cv=3, scoring="accuracy")
+#    joblib.dump(rf_acc_after_scaling_test_set,'saved_var/rf_acc_after_scaling_test_set')
+#else:
+#    rf_acc_after_scaling_test_set = joblib.load('saved_var/rf_acc_after_scaling_test_set')
 
 
-# [5] Try Predict
-print("Random forest predict:")
-sample_id = 155
-print(rf_clf.predict([X_train[sample_id]]))
-
-print("Actual result:")
-y_train[sample_id]
-
-# In[6]: EVALUATE CLASSIFIERS
-from sklearn.model_selection import cross_val_score
-
-# 6.2. RandomForestClassifier  
-#Tính accuracy, dùng cross_val_score, chỉ định scoring = "accuracy"
-# Warning: takes time for new run! 
-#temp_forest_acc = []
-#forest_acc=RunOrLoad('cross_val_score(rf_clf, X_train, y_train, cv=3)', temp_forest_acc, 'saved_var/forest_acc', new_run=True);
-print('start calculate accuracy score...');
-if 0:
-    forest_acc = cross_val_score(rf_clf, X_train, y_train, cv=3, n_jobs=-1, scoring="accuracy")
-    joblib.dump(forest_acc,'saved_var/forest_acc')
-else:
-    forest_acc = joblib.load('saved_var/forest_acc')
 
 
-print('complete... this is result of Random forest:')
-print(forest_acc)
-none = 1
+
+## [5] Try Predict
+#print("Random forest predict:")
+#sample_id = 155
+#print(rf_clf.predict([X_train[sample_id]]))
+
+#print("Actual result:")
+#y_train[sample_id]
+
+## In[6]: EVALUATE CLASSIFIERS
+#from sklearn.model_selection import cross_val_score
+
+## 6.2. RandomForestClassifier  
+##Tính accuracy, dùng cross_val_score, chỉ định scoring = "accuracy"
+## Warning: takes time for new run! 
+
+#print('start calculate accuracy score...');
+#if 0:
+#    forest_acc = cross_val_score(rf_clf, X_train, y_train, cv=3, n_jobs=-1, scoring="accuracy")
+#    joblib.dump(forest_acc,'saved_var/forest_acc')
+#else:
+#    forest_acc = joblib.load('saved_var/forest_acc')
+
+
+#print('complete... this is result of Random forest:')
+#print(forest_acc)
+#none = 1

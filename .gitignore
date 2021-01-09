@@ -9,6 +9,8 @@ __pycache__/
 # Distribution / packaging
 .Python
 build/
+tunning/
+.tunning
 saved_var/
 .saved_var
 develop-eggs/

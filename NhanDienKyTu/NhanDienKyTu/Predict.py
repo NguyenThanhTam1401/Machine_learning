@@ -51,6 +51,10 @@ import joblib
 #============================= RandomForestClassifier
 from sklearn.ensemble import RandomForestClassifier
 rf_clf = RandomForestClassifier(n_estimators=100, random_state=42)
+
+#from sklearn.tree import DecisionTreeClassifier
+#rf_clf = DecisionTreeClassifier(random_state=42)
+
 from sklearn.model_selection import cross_val_predict
 from PIL import Image
 from matplotlib.pyplot import imread
@@ -58,6 +62,9 @@ from skimage.color import rgb2gray, rgba2rgb
 class RandomForestPredict:
     rf_clf = RandomForestClassifier(n_estimators=100, random_state=42)
     rf_clf = joblib.load('saved_var/rf_clf')
+    
+    #rf_clf = DecisionTreeClassifier(random_state=42)
+    #rf_clf = joblib.load('saved_var/dt_clf')
     print('học xong RandomForestClassifier')
 
     def predict(self, image_name):
@@ -74,7 +81,7 @@ class RandomForestPredict:
             img_arr[i] = int(a)
             img_arr[i] = 255 - img_arr[i]
 
-        print(img_arr)
+        #print(img_arr)
         #
         
         #i = img_arr.reshape(28, 28)
@@ -82,9 +89,82 @@ class RandomForestPredict:
         #plt.title("letter: ")
         #plt.show()
         #
-        print('Đây là ký tự: ' + self.numbers_to_strings(self.rf_clf.predict([img_arr])[0]))
-        print(self.rf_clf.predict([img_arr]))
+        results = self.rf_clf.predict_proba([img_arr])[0]
+        print(results)
+        results = np.array(results)
+        first_max = -1
+        fist_index = -1
+        second_max = -1
+        second_index = -1
+        third_max = -1
+        third_index = -1
+        fourth_max = -1
+        fourth_index = -1
+        fifth_max = -1
+        fifth_index = -1
 
+        for i in range(0, results.size):
+            results[i] = results[i]*100
+            if(results[i] >= first_max):
+                first_max = results[i]
+                first_index = self.numbers_to_strings(i)
+                continue
+            if(results[i] >= second_max):
+                second_max = results[i]
+                second_index = self.numbers_to_strings(i)
+                continue
+            if(results[i] >= third_max):
+                third_max = results[i]
+                third_index = self.numbers_to_strings(i)
+                continue
+            if(results[i] >= fourth_max):
+                fourth_max = results[i]
+                fourth_index = self.numbers_to_strings(i)
+                continue
+            if(results[i] >= fifth_max):
+                fifth_max = results[i]
+                fifth_index = self.numbers_to_strings(i)
+
+
+        kq = 'results:\n' + '- ' + str(first_index) + ': ' + str(round(first_max, 2)) + '%\n' + '- ' + str(second_index) + ': ' + str(round(second_max, 2)) + '%\n' + '- ' + str(third_index) + ': ' + str(round(third_max,2)) + '%\n'  + '- ' + str(fourth_index) + ': ' + str(round(fourth_max, 2)) + '%\n'  + '- ' + str(fifth_index) + ': ' + str(round(fifth_max, 2)) + '%\n'
+        print(kq)
+        return kq
+
+        #return self.numbers_to_strings(self.rf_clf.predict([img_arr])[0])
+        #print('Đây là ký tự: ' + self.numbers_to_strings(self.rf_clf.predict([img_arr])[0]))
+        #print(self.rf_clf.predict([img_arr]))
+
+    #def numbers_to_strings(self,char): 
+    #    switcher = { 
+    #        1: 'a, A', 
+    #        2: 'b, B', 
+    #        3: 'c, C', 
+    #        4: 'd, D',
+    #        5: 'e, E',
+    #        6: 'f, F',
+    #        7: 'g, G',
+    #        8: 'h, H',
+    #        9: 'i, I',
+    #        10:'j, J',
+    #        11: 'k, K',
+    #        12:'l, L',
+    #        13: 'm, M',
+    #        14:'n, N',
+    #        15:'o, O',
+    #        16:'p, P',
+    #        17:'q, Q',
+    #        18:'r, R',
+    #        19:'s, S',
+    #        20:'t, T',
+    #        21: 'u, U',
+    #        22: 'v, V',
+    #        23: 'w, W',
+    #        24: 'x, X',
+    #        25:'y, Y',
+    #        26: 'z, Z'
+    #    }
+    #    return switcher.get(char, "nothing")
+    
     def numbers_to_strings(self,char): 
         switcher = { 
             0: '0', 
@@ -136,7 +216,7 @@ class RandomForestPredict:
             46:'t'
         }
         return switcher.get(char, "nothing")
-    
+
     def predict2():
         image = Image.open('test.png')
         image.thumbnail((28, 28))
@@ -159,4 +239,3 @@ class RandomForestPredict:
         #
 
         print(self.rf_clf.predict([img_arr]))
-

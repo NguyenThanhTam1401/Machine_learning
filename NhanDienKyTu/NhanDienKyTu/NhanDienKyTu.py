@@ -4,6 +4,9 @@ import turtle
 import svgwrite
 from PIL import Image
 
+from random import seed
+from random import randint
+seed(1)
 MOVING, DRAGGING = range(2)  # states
 from Predict import RandomForestPredict
 yertle = Turtle()
@@ -54,8 +57,8 @@ def ScreenShot():
     yertle.hideturtle()
     yertle.screen.getcanvas().postscript(file="char.eps", colormode='color')
     image_eps = 'char.eps'
-    im = Image.open(image_eps)
 
+    im = Image.open(image_eps)
     fig = im.convert('RGBA')
     image_png= 'char.png'
     fig.save(image_png, lossless = True)
@@ -67,11 +70,18 @@ def ScreenShot():
     yertle.showturtle()
     yertle.clear()
     print('Ok')
-    predict('char.png')
+    result = predict('char.png')
+    print()
+    show = 'Đây là ký tự: ' + result
+    yertle.goto(-200, 0)
+    yertle.write(result, move=False, align="left", font=("Arial", 20, "normal"))
+
+def ClearScreen():
+    yertle.clear()
 
 def predict(image):
     ef_predict = RandomForestPredict()
-    ef_predict.predict(image)
+    return ef_predict.predict(image)
 
 
 def onmove(self, fun, add=None):
@@ -86,14 +96,14 @@ def onmove(self, fun, add=None):
 def resize_image(image_name):
     image = Image.open(image_name)
     image.thumbnail((28, 28))
-    image.save('char.png')
-    #image.show()
+    image.save("char.png")
+
 
 yertle.screen.setup(500, 500)
 yertle.screen.screensize(500, 500)
 
 yertle.pensize(30)
-yertle.turtlesize(0.2)
+yertle.turtlesize(2)
 yertle.speed('fastest')
 state = MOVING 
 
@@ -103,6 +113,8 @@ yertle.onclick(click_handler)  # a click will turn motion into drag
 
 yertle.screen.listen()
 yertle.screen.onkeypress(ScreenShot, 'Return')
+yertle.screen.onkeypress(ClearScreen, "space")
+yertle.screen.onkeypress(ClearScreen, "Delete")
 
 yertle.screen.mainloop()
 
